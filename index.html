@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savior Consulting Group — Operations & Web</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a;
+      --dark: #111111;
+      --card: #161616;
+      --card2: #1c1c1c;
+      --blue: #2563EB;
+      --blue-light: #3B82F6;
+      --blue-dim: rgba(37,99,235,0.18);
+      --white: #FFFFFF;
+      --gray: #9CA3AF;
+      --gray-light: #D1D5DB;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .logo em { color: var(--blue); font-style: normal; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--gray); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--blue); color: #fff; border: none; cursor: pointer;
+      padding: 0.6rem 1.6rem; border-radius: 3px; font-size: 0.82rem; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--blue-light); }
+
+    /* HERO */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+      padding: 6rem 1.5rem 4rem;
+      overflow: hidden;
+    }
+    .hero-wordmark {
+      position: relative; z-index: 2;
+      text-align: center;
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      font-weight: 600;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.95);
+      margin-top: 1rem;
+      padding-left: 0.42em;
+      text-shadow:
+        0 1px 0 rgba(255,255,255,0.15),
+        0 2px 0 rgba(0,0,0,0.4),
+        0 3px 0 rgba(0,0,0,0.4),
+        0 4px 0 rgba(0,0,0,0.35),
+        0 5px 12px rgba(0,0,0,0.6),
+        0 8px 30px rgba(37,99,235,0.18);
+      transform: perspective(900px) rotateX(6deg);
+      animation: wordmarkSway 9s ease-in-out infinite;
+    }
+    .hero-wordmark em { color: var(--blue); font-style: normal; font-weight: 800; text-shadow: 0 0 20px rgba(37,99,235,0.5), 0 2px 0 #1e3a8a, 0 3px 0 #172554; }
+    @keyframes wordmarkSway {
+      0%,100% { transform: perspective(900px) rotateX(6deg) rotateY(-4deg); }
+      50%     { transform: perspective(900px) rotateX(6deg) rotateY(4deg); }
+    }
+
+    /* SCROLL PROGRESS BAR */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+      box-shadow: 0 0 10px rgba(59,130,246,0.6);
+      z-index: 9999; transition: width 0.08s linear;
+    }
+
+    /* CUSTOM CURSOR (disabled) */
+    #cursor-dot, #cursor-ring { display: none !important; }
+
+    /* TYPE-IN CARET */
+    .type-caret {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--blue); margin-left: 2px; vertical-align: -2px;
+      animation: caretBlink 0.9s steps(1) infinite;
+    }
+    @keyframes caretBlink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+
+    /* MARQUEE STRIP */
+    .marquee {
+      position: relative; overflow: hidden;
+      background: linear-gradient(90deg, #0a0c14, #11131c, #0a0c14);
+      border-top: 1px solid rgba(59,130,246,0.15);
+      border-bottom: 1px solid rgba(59,130,246,0.15);
+      padding: 1.1rem 0;
+    }
+    .marquee-track {
+      display: flex; gap: 3rem; width: max-content;
+      animation: marqueeScroll 38s linear infinite;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.32em;
+      text-transform: uppercase; color: rgba(255,255,255,0.78);
+      white-space: nowrap;
+    }
+    .marquee-track span { display: inline-flex; align-items: center; gap: 3rem; }
+    .marquee-track .dot { color: var(--blue); }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .hero-tag {
+      font-size: clamp(1rem, 1.8vw, 1.35rem);
+      font-weight: 400; line-height: 1.4;
+      color: var(--white);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.005em;
+    }
+    .hero-tag .blue { color: var(--blue); font-weight: 600; }
+    #hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover; background-position: center;
+      filter: brightness(0.12) saturate(0.5);
+    }
+    #three-canvas { position: absolute; inset: 0; z-index: 1; }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 2rem 1.5rem;
+      max-width: 860px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em;
+      color: var(--blue); text-transform: uppercase;
+      border: 1px solid rgba(37,99,235,0.5); padding: 0.4rem 1.1rem;
+      border-radius: 2px; margin-bottom: 2.25rem;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after { content: '—'; opacity: 0.5; }
+    .hero-h1 {
+      font-size: clamp(1.6rem, 3.4vw, 2.6rem);
+      font-weight: 400; line-height: 1.25;
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.005em;
+    }
+    .hero-h1 .blue { font-weight: 600; }
+    .hero-h1 .blue { color: var(--blue); }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--gray); max-width: 560px;
+      margin: 0 auto 3rem; line-height: 1.75;
+    }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--blue); color: #fff; padding: 1rem 2.5rem;
+      border-radius: 3px; text-decoration: none; font-weight: 700; font-size: 0.95rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { background: var(--blue-light); box-shadow: 0 0 40px rgba(37,99,235,0.4); }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 1rem 2.5rem;
+      border-radius: 3px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.04); }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--card);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; justify-content: center; flex-wrap: wrap;
+    }
+    .stat {
+      padding: 2.25rem 3.5rem; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      flex: 1; min-width: 140px;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-size: 2.2rem; font-weight: 900; color: var(--blue); line-height: 1; }
+    .stat-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 0.4rem; }
+
+    /* SERVICES */
+    #services {
+      padding: 7rem 2rem;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(37,99,235,0.14), transparent 60%),
+        radial-gradient(ellipse at 80% 100%, rgba(37,99,235,0.10), transparent 55%),
+        linear-gradient(180deg, #1a1d29 0%, #11131c 100%);
+      overflow: hidden;
+    }
+    #services::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at center, #000 35%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 80%);
+      pointer-events: none;
+    }
+    #services > * { position: relative; z-index: 1; }
+
+    .section-h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.02em;
+      color: #ffffff; position: relative; display: inline-block;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.22em;
+      color: var(--blue); text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .section-h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.02em; }
+    .section-sub { color: var(--gray); margin-top: 0.75rem; font-size: 1rem; line-height: 1.7; }
+    .section-header { margin-bottom: 4rem; }
+    .section-header.center { text-align: center; }
+    .section-header.center .section-sub { max-width: 520px; margin-left: auto; margin-right: auto; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.75rem; max-width: 1100px; margin: 0 auto;
+      perspective: 1400px;
+    }
+    @media (min-width: 1000px) {
+      .services-grid { grid-template-columns: repeat(3, 1fr); }
+      .service-card:nth-child(5) { grid-column: span 2; }
+    }
+    .service-card {
+      background: linear-gradient(155deg, #1d2030 0%, #14161f 55%, #0f1118 100%);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 2.75rem 2.25rem;
+      position: relative; overflow: hidden;
+      transform-style: preserve-3d;
+      transform-origin: center top;
+      transform: rotateX(-90deg) translateY(40px);
+      opacity: 0;
+      transition:
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.8s ease,
+        border-color 0.3s,
+        box-shadow 0.4s;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.06) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 22px 40px -18px rgba(0,0,0,0.85),
+        0 6px 14px -6px rgba(0,0,0,0.6);
+    }
+    .service-card.in-view {
+      transform: rotateX(0deg) translateY(0);
+      opacity: 1;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .service-card::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 50% -10%, rgba(59,130,246,0.18), transparent 55%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .service-card:hover {
+      border-color: rgba(59,130,246,0.45);
+      transform: rotateX(0) translateY(-8px) scale(1.015);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.10) inset,
+        0 -1px 0 rgba(0,0,0,0.6) inset,
+        0 32px 60px -22px rgba(0,0,0,0.95),
+        0 10px 22px -8px rgba(37,99,235,0.35);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:hover::after { opacity: 1; }
+    .service-num { font-size: 3rem; font-weight: 900; color: rgba(37,99,235,0.15); line-height: 1; margin-bottom: 1.25rem; }
+    .service-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+    .service-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .service-desc { color: var(--gray); font-size: 0.92rem; line-height: 1.75; }
+    .service-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .service-list li { color: var(--gray); font-size: 0.88rem; padding-left: 1.25rem; position: relative; }
+    .service-list li::before { content: '▹'; position: absolute; left: 0; color: var(--blue); }
+    .price-pill {
+      margin-top: 1.75rem; display: inline-block;
+      font-size: 0.78rem; color: var(--blue); font-weight: 700;
+      background: var(--blue-dim); padding: 0.35rem 0.9rem; border-radius: 3px;
+      letter-spacing: 0.04em;
+    }
+
+    /* CITY BANNER */
+    #city-banner {
+      position: relative; height: 380px;
+      background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover; background-attachment: fixed; background-position: center 40%;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .city-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10,10,10,0.88) 0%, rgba(37,99,235,0.45) 100%);
+    }
+    .city-text { position: relative; z-index: 1; text-align: center; padding: 2rem; }
+    .city-text blockquote {
+      font-size: clamp(1.3rem, 3.5vw, 2.25rem);
+      font-weight: 800; line-height: 1.35;
+      max-width: 760px; letter-spacing: -0.01em;
+    }
+    .city-text blockquote em { color: var(--blue); font-style: normal; }
+    .city-text p { color: var(--gray); font-size: 0.9rem; margin-top: 1rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ABOUT */
+    #about { padding: 7rem 2rem; }
+    .about-wrap {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem; align-items: center;
+    }
+    .about-callout {
+      background: linear-gradient(155deg, #1d2030 0%, #14161f 55%, #0f1118 100%);
+      border: 1px solid rgba(59,130,246,0.18);
+      border-radius: 10px; padding: 2rem 1.85rem;
+      box-shadow: 0 22px 40px -18px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    }
+    .about-callout h3 {
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.22em;
+      color: var(--blue); text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .about-callout ul { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .about-callout li {
+      display: grid; grid-template-columns: 36px 1fr; gap: 0.85rem; align-items: start;
+      color: var(--gray-light); font-size: 0.92rem; line-height: 1.55;
+    }
+    .about-callout li strong { color: var(--white); display: block; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; }
+    .about-callout .ic {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(37,99,235,0.12); border: 1px solid rgba(59,130,246,0.3);
+      color: var(--blue-light); font-weight: 800; font-size: 0.85rem; letter-spacing: 0.05em;
+    }
+    .about-callout .ic svg { width: 18px; height: 18px; stroke: var(--blue-light); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .about-photo-col { position: relative; }
+    .about-photo-col::after {
+      content: ''; position: absolute; bottom: -14px; right: -14px;
+      width: 60%; height: 60%; border: 2px solid var(--blue); border-radius: 4px;
+    }
+    .about-photo {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover;
+      border-radius: 4px; position: relative; z-index: 1;
+      filter: grayscale(30%);
+    }
+    .about-copy .section-label { text-align: left; }
+    .about-copy h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); font-weight: 900; margin-bottom: 1.75rem; letter-spacing: -0.02em; }
+    .about-copy p { color: var(--gray); line-height: 1.85; margin-bottom: 1.25rem; font-size: 0.94rem; }
+    .about-copy strong { color: var(--white); }
+    .about-cta { margin-top: 1.5rem; display: inline-block; }
+
+    /* CONTACT */
+    #contact { padding: 7rem 2rem; background: var(--card); }
+    .contact-wrap { max-width: 680px; margin: 0 auto; text-align: center; }
+    .contact-wrap h2 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    .contact-wrap .lead { color: var(--gray); margin-bottom: 3rem; line-height: 1.7; max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 3rem;}
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem; max-width: 720px; margin-left: auto; margin-right: auto; }
+    .contact-card.wide { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 1.25rem; padding: 1.1rem 1.5rem; text-align: left; }
+    .contact-card.wide .contact-card-icon { margin-bottom: 0; }
+    .contact-card.wide .contact-card-label { margin-bottom: 0.15rem; }
+    @media (max-width: 540px) { .contact-grid { grid-template-columns: 1fr; } .contact-card.wide { flex-direction: column; gap: 0.5rem; text-align: center; } }
+    .contact-card {
+      background: var(--card2); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 6px; padding: 1.75rem 1.25rem; text-align: center;
+    }
+    .contact-card-icon { display: flex; justify-content: center; margin-bottom: 0.85rem; }
+    .contact-card-icon svg { width: 28px; height: 28px; stroke: var(--blue); stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .contact-card-label { font-size: 0.7rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem; }
+    .contact-card-val { font-size: 0.9rem; font-weight: 600; color: var(--white); word-break: break-word; overflow-wrap: anywhere; }
+
+    /* FOOTER */
+    footer {
+      background: #050505; padding: 2rem 2rem 3rem;
+      border-top: 1px solid rgba(255,255,255,0.04); text-align: center;
+    }
+    .footer-logo { font-size: 1rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .footer-logo em { color: var(--blue); font-style: normal; }
+    footer p { color: var(--gray); font-size: 0.78rem; line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .about-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      .about-photo-col { max-width: 280px; margin: 0 auto; }
+      .stat { padding: 1.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SCROLL PROGRESS + CUSTOM CURSOR -->
+  <div id="scroll-progress"></div>
+  <div id="cursor-ring"></div>
+  <div id="cursor-dot"></div>
+
+
+  <nav>
+    <div class="logo"><em>S</em>avior Consulting Group</div>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Free Consult</a>
+  </nav>
+
+  <!-- HERO with Three.js -->
+  <section id="hero">
+    <div id="hero-bg"></div>
+    <canvas id="three-canvas"></canvas>
+    <div class="hero-wordmark"><em>Savior</em> Consulting Group</div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Lexington & Louisville, KY · Est. 2026</div>
+      <h1 class="hero-tag" id="hero-tag" data-typed="">&nbsp;</h1>
+      <p class="hero-sub">
+        Hands-on help for owners and operators — fixing what's broken, building what's missing, and pulling AI in where it earns its keep.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Book a Free Call</a>
+        <a href="#services" class="btn-ghost">See What We Do</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" data-count-to="20" data-suffix="+">0</div>
+      <div class="stat-label">Years in Operations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count-to="11">0</div>
+      <div class="stat-label">Locations Operated</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count-to="5">0</div>
+      <div class="stat-label">Core Services</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count-to="500" data-prefix="$">$0</div>
+      <div class="stat-label">Launch Package Starting At</div>
+    </div>
+  </div>
+
+  <!-- MARQUEE STRIP -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Operations <em class="dot">·</em> Websites <em class="dot">·</em> AI Integration <em class="dot">·</em> Dashboards <em class="dot">·</em> Workflow Automation <em class="dot">·</em> Lexington & Louisville, KY <em class="dot">·</em></span>
+      <span>Operations <em class="dot">·</em> Websites <em class="dot">·</em> AI Integration <em class="dot">·</em> Dashboards <em class="dot">·</em> Workflow Automation <em class="dot">·</em> Lexington & Louisville, KY <em class="dot">·</em></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-header center">
+      <div class="section-label">What We Do</div>
+      <h2 class="section-h2">Five services. Built to hand you back your hours and your margin.</h2>
+      <p class="section-sub">AI integration is the engine — wrapped with operations, websites, live dashboards, and automations that recover the time and dollars your business is leaking every week.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <div class="service-title">Operations Consulting</div>
+        <p class="service-desc">You're losing money in labor, waste, and turnover — and you know it. With 20+ years inside operations, I know exactly where the leaks are and how to plug them.</p>
+        <ul class="service-list">
+          <li>Labor cost reduction</li>
+          <li>Team retention & leadership coaching</li>
+          <li>Ops audits & SOP development</li>
+          <li>Cost controls & margin recovery</li>
+          <li>Multi-unit operator support</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <div class="service-title">Website Design & Build</div>
+        <p class="service-desc">Your customers are searching for you online and finding nothing — or worse, your competitor. We build clean, fast, mobile-ready sites for local businesses that don't have time to mess with it.</p>
+        <ul class="service-list">
+          <li>One-page & multi-page sites</li>
+          <li>Mobile-first, fast-loading</li>
+          <li>Domain + professional email setup</li>
+          <li>Monthly support — priced lower than the competition</li>
+          <li>Tradesmen, contractors, local business</li>
+        </ul>
+        <span class="price-pill">From $500 Launch Package</span>
+      </div>
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <div class="service-title">Dashboard Building</div>
+        <p class="service-desc">If you can't see it, you can't fix it. We build live, daily-updating dashboards that pull your real numbers — sales, labor, food cost, KPIs — into one screen you'll actually open every morning.</p>
+        <ul class="service-list">
+          <li>Daily auto-refreshing data</li>
+          <li>Sales, labor, cost & KPI tracking</li>
+          <li>Multi-location rollups</li>
+          <li>Mobile + desktop ready</li>
+          <li>Custom branding</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">04</div>
+        <div class="service-title">Workflow Automations</div>
+        <p class="service-desc">The reports you build by hand every week. The data you copy-paste between systems. The emails you send on a schedule. We automate it — lights-out — so you get your time back.</p>
+        <ul class="service-list">
+          <li>Scheduled reports & email sends</li>
+          <li>Cross-system data pipelines</li>
+          <li>API integrations with your tools</li>
+          <li>Lights-out daily/weekly runs</li>
+          <li>Custom agent build-outs</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-num">05</div>
+        <div class="service-title">AI Integration <span class="price-pill" style="margin-left:0.5rem;">Our Flagship</span></div>
+        <p class="service-desc">This is the engine. AI isn't a chatbot in the corner of your website — it's a teammate that drafts your reports, answers your customers, watches your data, and runs the busywork while you sleep. We bring it into your real workplace.</p>
+        <ul class="service-list">
+          <li>AI agents trained on your business</li>
+          <li>Customer-facing assistants & chat</li>
+          <li>Document, email & report drafting</li>
+          <li>Decision support on live data</li>
+          <li>Built around your actual workflow — not generic</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CITY BANNER -->
+  <div id="city-banner">
+    <div class="city-overlay"></div>
+    <div class="city-text">
+      <blockquote>
+        Rooted in <em>Lexington & Louisville, KY</em>.<br>Built on real operator experience.
+      </blockquote>
+      <p>If you run a business in Lexington or Louisville — we should talk.</p>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-wrap">
+      <div class="about-copy">
+        <div class="section-label">About Us</div>
+        <h2>Real operators.<br>Not consultants who've never been in the trenches.</h2>
+        <p>Savior Consulting Group is led by owners and operators with <strong>20+ years in operations</strong> — leading teams, tightening margins, and fixing the systems other people can't see are broken.</p>
+        <p>We know what it costs when a key team member walks, when costs spike, and when an operations manual is a document nobody's read in two years. We've lived it on the floor and from the director's seat.</p>
+        <p>We built SCG to help business owners stop bleeding — and to help local businesses stop being invisible online. <strong>Lexington & Louisville-based. In-person available.</strong></p>
+        <a href="#contact" class="btn-primary about-cta">Let's Have a Conversation</a>
+      </div>
+      <aside class="about-callout">
+        <h3>How We Work</h3>
+        <ul>
+          <li>
+            <span class="ic">01</span>
+            <span><strong>Listen</strong>Walk your floor. Read your numbers. Understand what's actually broken.</span>
+          </li>
+          <li>
+            <span class="ic">02</span>
+            <span><strong>Build</strong>Design the systems, sites, dashboards, or AI tools that fix it.</span>
+          </li>
+          <li>
+            <span class="ic">03</span>
+            <span><strong>Deploy</strong>Roll it out hands-on. Train your team. Stay until it sticks.</span>
+          </li>
+          <li>
+            <span class="ic">04</span>
+            <span><strong>Multiply</strong>Make you and your team 3× more efficient — every week, lights-out.</span>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-wrap">
+      <div class="section-label">Get in Touch</div>
+      <h2>Ready to save time and money?</h2>
+      <p class="lead">Book a free 30-minute consult. No pitch deck. No fluff. Just an honest conversation about what's costing you — and what we can do about it.</p>
+      <div class="contact-grid">
+        <div class="contact-card wide">
+          <div class="contact-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+          <div>
+            <div class="contact-card-label">Email</div>
+            <div class="contact-card-val">bobby@saviorconsultinggroup.com</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="contact-card-label">Phone</div>
+          <div class="contact-card-val">(502) 497-1478</div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="contact-card-label">Location</div>
+          <div class="contact-card-val">Lexington & Louisville, KY</div>
+        </div>
+      </div>
+      <a href="mailto:bobby@saviorconsultinggroup.com" class="btn-primary">Send an Email</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo"><em>S</em>avior Consulting Group</div>
+    <p>© 2026 Savior Consulting Group · Lexington & Louisville, KY · saviorconsultinggroup.com</p>
+    <p style="margin-top:0.4rem">Operations Consulting &amp; Web Design for Local Business</p>
+  </footer>
+
+  <!-- THREE.JS CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    (function () {
+      const canvas = document.getElementById('three-canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 6;
+
+      // Outer wireframe icosahedron
+      const outerMesh = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(2.2, 1),
+        new THREE.MeshBasicMaterial({ color: 0x2563EB, wireframe: true, opacity: 0.35, transparent: true })
+      );
+      scene.add(outerMesh);
+
+      // Inner solid icosahedron
+      const innerMesh = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(1.3, 0),
+        new THREE.MeshBasicMaterial({ color: 0x1D4ED8, wireframe: true, opacity: 0.25, transparent: true })
+      );
+      scene.add(innerMesh);
+
+      // Floating particles
+      const positions = new Float32Array(300 * 3);
+      for (let i = 0; i < 300 * 3; i++) positions[i] = (Math.random() - 0.5) * 22;
+      const particleGeo = new THREE.BufferGeometry();
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const particles = new THREE.Points(
+        particleGeo,
+        new THREE.PointsMaterial({ color: 0x3B82F6, size: 0.045, opacity: 0.55, transparent: true })
+      );
+      scene.add(particles);
+
+      // Mouse parallax
+      let mx = 0, my = 0;
+      document.addEventListener('mousemove', e => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 0.6;
+        my = (e.clientY / window.innerHeight - 0.5) * 0.6;
+      });
+
+      (function animate() {
+        requestAnimationFrame(animate);
+        outerMesh.rotation.x += 0.003;
+        outerMesh.rotation.y += 0.005;
+        innerMesh.rotation.x -= 0.005;
+        innerMesh.rotation.y += 0.004;
+        particles.rotation.y += 0.0004;
+        camera.position.x += (mx - camera.position.x) * 0.02;
+        camera.position.y += (-my - camera.position.y) * 0.02;
+        camera.lookAt(scene.position);
+        renderer.render(scene, camera);
+      })();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    })();
+  </script>
+
+  <!-- FLASHY: SCROLL BAR, CUSTOM CURSOR, TYPE-IN, COUNTER-UP -->
+  <script>
+    (function() {
+      // ---- Scroll progress bar ----
+      const bar = document.getElementById('scroll-progress');
+      function onScroll() {
+        const h = document.documentElement;
+        const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight);
+        bar.style.width = (scrolled * 100) + '%';
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // ---- Custom cursor ----
+      const dot = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (fine && dot && ring) {
+        let mx = window.innerWidth/2, my = window.innerHeight/2;
+        let rx = mx, ry = my;
+        document.addEventListener('mousemove', (e) => {
+          mx = e.clientX; my = e.clientY;
+          dot.style.transform = `translate3d(${mx}px, ${my}px, 0) translate(-50%, -50%)`;
+        });
+        (function loop() {
+          rx += (mx - rx) * 0.18;
+          ry += (my - ry) * 0.18;
+          ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+          requestAnimationFrame(loop);
+        })();
+        const hoverables = 'a, button, .service-card, .stat, .contact-card, .nav-cta, input, textarea, select';
+        document.querySelectorAll(hoverables).forEach(el => {
+          el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+          el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+      }
+
+      // ---- Type-in for hero tag ----
+      const heroTag = document.getElementById('hero-tag');
+      if (heroTag) {
+        const segments = [
+          { t: 'The ' },
+          { t: 'savior', cls: 'blue' },
+          { t: ' your business has been looking for.' }
+        ];
+        heroTag.innerHTML = '<span class="type-caret"></span>';
+        const caret = heroTag.querySelector('.type-caret');
+        let segIdx = 0, charIdx = 0;
+        function tick() {
+          if (segIdx >= segments.length) {
+            setTimeout(() => caret.style.display = 'none', 1400);
+            return;
+          }
+          const seg = segments[segIdx];
+          if (charIdx === 0) {
+            const span = document.createElement('span');
+            if (seg.cls) span.className = seg.cls;
+            span.dataset.seg = segIdx;
+            heroTag.insertBefore(span, caret);
+          }
+          const span = heroTag.querySelector(`[data-seg="${segIdx}"]`);
+          span.textContent += seg.t[charIdx];
+          charIdx++;
+          if (charIdx >= seg.t.length) { segIdx++; charIdx = 0; }
+          setTimeout(tick, 38 + Math.random() * 28);
+        }
+        setTimeout(tick, 500);
+      }
+
+      // ---- Split headline letters for wave ride ----
+      const waveH2 = null; /* letter-split disabled */
+      if (waveH2) {
+        let i = 0;
+        for (const ch of text) {
+          const span = document.createElement('span');
+          span.className = 'ch' + (ch === ' ' ? ' space' : '');
+          span.style.setProperty('--i', i++);
+          span.textContent = ch === ' ' ? ' ' : ch;
+          waveH2.appendChild(span);
+        }
+      }
+
+      // ---- Counter-up stats ----
+      const nums = document.querySelectorAll('.stat-num[data-count-to]');
+      if (nums.length && 'IntersectionObserver' in window) {
+        const cio = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = parseFloat(el.dataset.countTo);
+            const prefix = el.dataset.prefix || '';
+            const suffix = el.dataset.suffix || '';
+            const dur = 1400;
+            const start = performance.now();
+            (function step(now) {
+              const t = Math.min((now - start) / dur, 1);
+              const eased = 1 - Math.pow(1 - t, 3);
+              el.textContent = prefix + Math.round(target * eased) + suffix;
+              if (t < 1) requestAnimationFrame(step);
+              else el.textContent = prefix + target + suffix;
+            })(start);
+            cio.unobserve(el);
+          });
+        }, { threshold: 0.4 });
+        nums.forEach(n => cio.observe(n));
+      }
+    })();
+  </script>
+
+  <!-- SCROLL-TRIGGERED FLIP-IN FOR SERVICE CARDS -->
+  <script>
+    (function() {
+      const cards = document.querySelectorAll('.service-card');
+      if (!('IntersectionObserver' in window) || !cards.length) {
+        cards.forEach(c => c.classList.add('in-view'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            const idx = Array.from(cards).indexOf(entry.target);
+            setTimeout(() => entry.target.classList.add('in-view'), idx * 110);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -60px 0px' });
+      cards.forEach(c => io.observe(c));
+    })();
+  </script>
+</body>
+</html>
